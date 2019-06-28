@@ -2,8 +2,8 @@
 
 const int MAX_SIZE = 10000;
 
-char str[MAX_SIZE][100];
-int len;
+char str[MAX_SIZE][100], buf[MAX_SIZE][100];
+int n;
 
 void my_strcpy(char a[], char b[]);
 
@@ -34,7 +34,7 @@ void my_strcpy(char a[], char b[]) { // 문자열은 사실 포인터 형이다!
 }
 
 void qsort(char v[][100], int left, int right) {
-    if (left >= right) return;
+    if(left >= right) return;
     int l = left - 1;
     int r = right + 1;
 
@@ -47,7 +47,7 @@ void qsort(char v[][100], int left, int right) {
     }
     mid[i] = 0;
 
-    while (1) {
+    while(1) {
         while(my_strcmp(v[++l], mid) < 0);
         while(my_strcmp(v[--r], mid) > 0);
         if(l >= r) break;
@@ -57,13 +57,40 @@ void qsort(char v[][100], int left, int right) {
     qsort(v, r + 1, right);
 }
 
-int main() {
-    scanf("%d", &len);
+void merge_sort(char v[][100], int len) {
+    if(len < 2) return;
+    int mid = len / 2;
+    int i=0, j = mid, k=0;
+
+    merge_sort(v, mid);
+    merge_sort(v + mid, len - mid);
+
+    while(i < mid && j < len) {
+        if(my_strcmp(v[i], v[j]) < 0) {
+            my_strcpy(buf[k++], v[i++]);
+        }
+        else {
+            my_strcpy(buf[k++], v[j++]);
+        }
+    }
+    while(i < mid) {
+        my_strcpy(buf[k++], v[i++]);
+    }
+    while(j < len) {
+        my_strcpy(buf[k++], v[j++]);
+    }
     for(int i=0; i<len; ++i) {
+        my_strcpy(v[i], buf[i]);
+    }
+}
+
+int main() {
+    scanf("%d", &n);
+    for(int i=0; i<n; ++i) {
         scanf("%s", str[i]);
     }
-    qsort(str, 0, len-1);
-    for(int i=0; i<len; ++i) {
+    merge_sort(str, n);
+    for(int i=0; i<n; ++i) {
         printf("%s\n", str[i]);
     }
 }
