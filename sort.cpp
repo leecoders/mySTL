@@ -11,10 +11,10 @@ void merge_sort(int *p, int len) {
     int i, j, k, mid;
     mid = len/2;
     i=0, j=mid, k=0; // k는 버퍼를 위한 인덱스
-
+    
     merge_sort(p, mid); // qsort와 달리 쪼개는 것을 먼저함
     merge_sort((p + mid), (len - mid)); // (p+mid) is &p[mid]
-
+    
     while(i < mid && j < len) { // 끝나면 보통 둘 중 하나는 끝까지 못 갔음
         if(p[i] < p[j]) {
             buf[k++] = p[i++];
@@ -38,8 +38,8 @@ void qsort(int *p, int left, int right) {
     if(left >= right) return; // left==right는 길이 1, left>right는 길이 2 이상. 종료
     int l = left - 1;
     int r = right + 1;
-    int mid = p[(l+r) / 2]; // 가운데 피벗
-    while(1) {
+    int mid = p[(l+r) / 2]; // 중앙 값이 피벗. 하지만 인덱스가 아닌 값을 mid로 해야 한다. 왜? 사실 피벗을 기준으로 나눌 건 아니거든.
+    while(1) {              // 오히려 l, r 교환의 종료 조건은 단지 l과 r의 l>=r일 때이다. (중요!!)
         while(p[++l] < mid); // mid보다 왼쪽인데 크거나 같은 요소 찾으면 stop
         while(p[--r] > mid); // mid보다 오른쪽인데 작거나 같은 요소 찾으면 stop
         if(l >= r) break;
@@ -47,7 +47,7 @@ void qsort(int *p, int left, int right) {
         p[l] = p[r];
         p[r] = temp;
     }
-    qsort(p, left, l-1);
+    qsort(p, left, l-1); // l==r 일 때, 요소 한 개가 딸려가지 않아도 괜찮다.
     qsort(p, r+1, right);
 }
 
